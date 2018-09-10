@@ -113,3 +113,19 @@ export function clone (object) {
     return dest
   }
   export const assign = merge
+  
+  export function s4 () {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1)
+  }
+  
+  export function genId (prefix = '') {
+    const suffix = s4() + s4()
+  
+    if (prefix) {
+      return `${prefix}-${suffix}`
+    }
+  
+    return suffix
+  }

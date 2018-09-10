@@ -139,12 +139,30 @@ export default {
                         "title": "Password",
                         "minLength": 3
                     },
+                    "email": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "title": "Email",
+                        "default": "demsking@gmail.com",
+                        "attrs": {
+                            "type": "email",
+                            "placeholder": "Your Email"
+                        }
+                    },
                     "telephone": {
                         "type": "string",
                         "title": "Telephone",
                         "minLength": 10
                     }
+                },
+                "submit":{
+                    "type": "button",
+                    "title": "提交",
+                    "attrs":{
+                        "type":"primary",
+                    }
                 }
+
             },
             prettySchema:""  //转变成字符串的json schema
         };

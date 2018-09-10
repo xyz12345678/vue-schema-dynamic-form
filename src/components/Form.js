@@ -2,12 +2,24 @@
 import FormSchemaField from './fields/index.js'
 import {parseDefaultScalarValue,parseDefaultObjectValue,loadFields} from '../lib/parser'
 
-import {clone,clear,isEmpty,assign} from '../lib/utils'
+import {clone,clear,isEmpty,assign,genId} from '../lib/utils'
 export default {
     data: () => ({
+        ref: genId('form-schema'),
         data: {}, //表单数据
         loadedSchema:{}, //schemajson数据
         fields:[], //用于存储表单项
+        rules: {
+            firstName: [
+                { required: true, message: '请输入活动名称', trigger: 'blur' }
+            ],
+            lastName: [
+                { required: true, message: '请输入活动名称', trigger: 'blur' }
+            ],
+            bio: [
+                { required: true, message: '请输入活动名称', trigger: 'blur' }
+            ]
+        }
     }),
     props: {
         /**
@@ -17,9 +29,6 @@ export default {
          */
         schema: { type: Object, default: () => ({}) },
         /**
-         * Use this directive to create two-way data bindings with the
-         * component. It automatically picks the correct way to update the
-         * element based on the input type.
          *
          * @model
          * @default undefined
@@ -39,7 +48,7 @@ export default {
     render: function (createElement) {
         var self = this;
         const nodes = []
-        const { title, description } = this.loadedSchema;
+        const { title, description,submit } = this.loadedSchema;
 
         if (title) {
             nodes.push(createElement('h2', {
@@ -82,15 +91,37 @@ export default {
 
             });
             nodes.push(createElement('el-form',{
+                
+                ref:self.ref,
+                rule:self.rules,
                 props:{
+                    model:self.data,
+                    
                     'label-width':"140px",
-                    'inline':"true"
+                    'inline':"true",
                 }
             },formItemNodes));
 
         }else {
             nodes.push(createElement('p', 'No items found. '));
         }
+
+        // 提交按钮
+        if (submit) {
+            nodes.push(createElement('el-button',{
+                style:{
+                    'text-align':'center',
+                    'margin-left':'30%'
+                },
+                attrs:submit.attrs,
+                on:{
+                    click: () => {
+                        this.submit();
+                    }
+                }
+            }, submit.title))
+        }
+
         return createElement('div',nodes);
     },
     methods: {
@@ -111,13 +142,40 @@ export default {
         emitInputEvent () {
             this.$emit('input', this.data)
         },
+        /**
+         * 表单验证
+         */
+        checkValidity(){
+            
+            this.$refs[this.ref].validate((valid) => {
+                if (valid) {
+                  alert('submit!');
+                  return true;
+                } else {
+                  alert.log('error submit!!');
+                  return false;
+                }
+            });
+        },
+        /**
+         * 表单提交
+         */
+        submit (event) {
+            this.$emit('invalid', e);
+            if (this.checkValidity()) {
+              /**
+               * Fired when a form is submitted
+               */
+              this.$emit('submit', event)
+            }
+          },
     },
     created () {
         if (!isEmpty(this.schema)) {
             this.load(this.schema, this.value, false)
         }
     },
-    wacth:{
+    watch:{
 
         schema:function(){
             if (!isEmpty(this.schema)) {
