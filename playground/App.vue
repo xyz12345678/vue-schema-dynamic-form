@@ -35,48 +35,38 @@
                         <span v-if="!jsonValid" class="el-icon-circle-close check-icon"></span>
                         Schema</div>
                     <div class="panel-body">
-                        <!-- <pre v-if="schema" v-html="prettyJSON(schema)"></pre> -->
-                        <codemirror
-                        :value="prettySchema"
-                        :options="editorOption"
-                        ref="myEditor"
-                        @change="codeChangeMethod">
+                        <codemirror :value="prettySchema" :options="editorOption" ref="myEditor" @change="codeChangeMethod">
                         </codemirror>
                     </div>
                 </div>
-                <div>
-                    <pre class="model">{{ myData }}</pre>
+                <div class="panel panel-default">
+                    <div class="panel-heading">json data</div>
+                    <div class="panel-body">
+                       <pre class="model">{{ myData }}</pre>
+                    </div>
                 </div>
             </el-col>
             <el-col :span="14">
-                <Form :schema="jsonschema" v-model="myData"/>
+                <Form :schema="jsonschema" v-model="myData" />
                 </Form>
             </el-col>
         </el-row>
-        
-       <!-- <Form
-            schema={liveValidateSchema}
-            formData={liveValidate}
-            onChange={this.setLiveValidate}>
-            <div />
-        </Form> -->
-        
+
     </div>
 </template>
 
 <script>
-// import HelloWorld from "./components/HelloWorld.vue";
-// import Msg from "../dist/helloMsg.min.js";
+
 import Form from "../src";
 import simple from "./samples/simple.js";
-import { codemirror } from 'vue-codemirror-lite';//用于写json
+import { codemirror } from "vue-codemirror-lite"; //用于写json
 
-require('codemirror/mode/javascript/javascript')
-require('codemirror/mode/vue/vue')
+require("codemirror/mode/javascript/javascript");
+require("codemirror/mode/vue/vue");
 
-require('codemirror/addon/hint/show-hint.js')
-require('codemirror/addon/hint/show-hint.css')
-require('codemirror/addon/hint/javascript-hint.js')
+require("codemirror/addon/hint/show-hint.js");
+require("codemirror/addon/hint/show-hint.css");
+require("codemirror/addon/hint/javascript-hint.js");
 
 const fromJson = json => JSON.parse(json);
 export default {
@@ -87,103 +77,146 @@ export default {
     },
     data() {
         return {
-             editorOption:{
+            editorOption: {
                 theme: "default",
                 height: "auto",
                 viewportMargin: Infinity,
                 mode: {
                     name: "javascript",
                     json: true,
-                    statementIndent: 2,
+                    statementIndent: 2
                 },
                 lineNumbers: true,
                 lineWrapping: true,
                 indentWithTabs: false,
-                tabSize: 2,
+                tabSize: 2
             },
             myData: {
                 firstName: "天天",
                 lastName: "china",
-                age:"",
-                bio:"",
-                password:"",
-                telephone:""
+                age: "",
+                bio: "",
+                password: "",
+                telephone: "",
+                multipleCheckbox:['daily'],
+                agree:true,
+                selectarray:['option1News']
             },
-            jsonschema:{
-                "title": "A registration form",
-                "description": "A simple form example.",
-                "type": "object",
-                "required": [
-                    "firstName",
-                    "lastName"
-                ],
-                "properties": {
-                    "firstName": {
-                        "type": "string",
-                        "title": "First name"
+            jsonschema: {
+                title: "A registration form",
+                description: "A simple form example.",
+                type: "object",
+                required: ["firstName", "lastName"],
+                properties: {
+                    firstName: {
+                        type: "string",
+                        title: "First name"
                     },
-                    "lastName": {
-                        "type": "string",
-                        "title": "Last name"
+                    lastName: {
+                        type: "string",
+                        title: "Last name"
                     },
-                    "age": {
-                        "type": "integer",
-                        "title": "Age"
-                    },
-                    "bio": {
-                        "type": "string",
-                        "title": "Bio"
-                    },
-                    "password": {
-                        "type": "string",
-                        "title": "Password",
-                        "minLength": 3
-                    },
-                    "email": {
-                        "type": "string",
-                        "maxLength": 120,
-                        "title": "Email",
-                        "default": "demsking@gmail.com",
-                        "attrs": {
-                            "type": "email",
-                            "placeholder": "Your Email"
+                    age: {
+                        type: "integer",
+                        title: "Age",
+                        attrs: {
+                            min: "1",
+                            max: "10"
                         }
                     },
-                    "telephone": {
-                        "type": "string",
-                        "title": "Telephone",
-                        "minLength": 10
+                    bio: {
+                        type: "string",
+                        title: "Bio"
+                    },
+                    password: {
+                        type: "string",
+                        title: "Password",
+                        minLength: 3
+                    },
+                    email: {
+                        type: "string",
+                        maxLength: 120,
+                        title: "Email",
+                        default: "demsking@gmail.com",
+                        attrs: {
+                            type: "email",
+                            placeholder: "Your Email"
+                        }
+                    },
+                    telephone: {
+                        type: "string",
+                        title: "Telephone",
+                        minLength: 10
+                    },
+                    multipleCheckbox: {
+                        type: "array",
+                        title: "Checkboxes",
+                        anyOf: [
+                            { value: "daily", label: "Daily News" },
+                            { value: "promotion", label: "Promotion" }
+                        ],
+                        attrs: {
+                            type: "checkbox"
+                        }
+                    },
+                    groupedRadio: {
+                        type: "array",
+                        title: "Frequence",
+                        oneOf: [
+                            { value: "daily", label: "Daily News" },
+                            { value: "weekly", label: "Weekly News" }
+                        ],
+                        attrs: {
+                            type: "radio"
+                        }
+                    },
+                    agree: {
+                        type: "boolean",
+                        title: "Agree",
+                        description:
+                            "You agree to receive occasional updates and special offers for vue-json-schema updates.",
+                        default: false,
+                        attrs: {
+                            type: "checkbox"
+                        }
+                    },
+                    selectarray: {
+                        type: "array",
+                        title: "selectarray",
+                        "items":[
+                            { value: "option1", label: "option1News" },
+                            { value: "option2", label: "option2News" }
+                        ],
+                        attrs: {
+                            type: "select"
+                        }
                     }
                 },
-                "submit":{
-                    "type": "button",
-                    "title": "提交",
-                    "attrs":{
-                        "type":"primary",
+                submit: {
+                    type: "button",
+                    title: "提交",
+                    attrs: {
+                        type: "primary"
                     }
                 }
-
             },
-            prettySchema:""  //转变成字符串的json schema
+            prettySchema: "" //转变成字符串的json schema
         };
     },
-    methods:{
-        codeChangeMethod(code){
-            
+    methods: {
+        codeChangeMethod(code) {
             this.prettySchema = code;
             var prettySchema = {};
             try {
                 prettySchema = fromJson(code);
                 this.jsonValid = true;
-                this.jsonschema = Object.assign({},prettySchema);
-                
+                this.jsonschema = Object.assign({}, prettySchema);
             } catch (err) {
                 this.jsonValid = false;
             }
-            
         }
     },
-    mounted(){
+    mounted() {
         this.prettySchema = JSON.stringify(this.jsonschema, undefined, 4);
         //this.jsonschema = simple.jsonSchema;
     }

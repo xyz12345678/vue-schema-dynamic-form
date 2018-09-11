@@ -1,4 +1,4 @@
-//数字输入框组件
+// 输入框 组件 
 export default {
     functional: true,
     render: function (createElement,context) {
@@ -9,7 +9,7 @@ export default {
             },
            
         },[
-            createElement('el-input-number',{
+            createElement('el-input',{
                 attrs:context.props.schemaField['attrs'],
                 // 组件 props
                 props: {

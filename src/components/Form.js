@@ -1,8 +1,8 @@
 
 import FormSchemaField from './fields/index.js'
-import {parseDefaultScalarValue,parseDefaultObjectValue,loadFields} from '../lib/parser'
+import {parseDefaultObjectValue,loadFields} from '../lib/parser'
 
-import {clone,clear,isEmpty,assign,genId} from '../lib/utils'
+import {equals,clone,clear,isEmpty,assign,genId} from '../lib/utils'
 export default {
     data: () => ({
         ref: genId('form-schema'),
@@ -24,12 +24,10 @@ export default {
     props: {
         /**
          * The JSON Schema object.
-         *
          * @default {}
          */
         schema: { type: Object, default: () => ({}) },
         /**
-         *
          * @model
          * @default undefined
          */
@@ -38,8 +36,7 @@ export default {
             default: undefined
         },
         /**
-         * The HTTP method that the browser uses to submit the form.
-         *
+         * 提交表单的方法
          */
         method: { type: String, default: 'post' },
 
@@ -65,14 +62,10 @@ export default {
                 }
             }, description))
         }
-    
-        // if (this.schema.error) {
-        //     nodes.push(createElement(components.$.error.component, this.error))
-        // }
-        
+           
         if (this.fields) {
             const formItemNodes = this.fields.map((field) => {
-                const value =  this.data[field.attrs.name];
+                const value =  field.attrs?this.data[field.attrs.name]:"";
                 return createElement(FormSchemaField, {
                     field,
                     props: {
@@ -85,6 +78,10 @@ export default {
                             this.data[field.attrs.name] = parsedValue
                             console.log(parsedValue)
                             this.emitInputEvent();
+                        },
+                        change: (parsedValue) => {
+                            this.data[field.attrs.name] = parsedValue
+                            this.emitChangeEvent();      
                         }
                     }
                 })
@@ -143,6 +140,12 @@ export default {
             this.$emit('input', this.data)
         },
         /**
+         * 触发选项值改变
+         */
+        emitChangeEvent () {
+            this.$emit('change', this.data)
+        },
+        /**
          * 表单验证
          */
         checkValidity(){
@@ -176,7 +179,7 @@ export default {
         }
     },
     watch:{
-
+        //输入值改变后执行的方法
         schema:function(){
             if (!isEmpty(this.schema)) {
                 this.load(this.schema, this.value, false)

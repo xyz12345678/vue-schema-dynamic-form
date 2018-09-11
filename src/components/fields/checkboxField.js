@@ -1,4 +1,4 @@
-//数字输入框组件
+// 勾选框组件
 export default {
     functional: true,
     render: function (createElement,context) {
@@ -9,14 +9,14 @@ export default {
             },
            
         },[
-            createElement('el-input-number',{
+            createElement('el-checkbox',{
                 attrs:context.props.schemaField['attrs'],
                 // 组件 props
                 props: {
-                    value:context.props.value,
+                    checked:context.props.value,
                 },
                 on:context.listeners
-            })
+            },context.props.schemaField['label'])
         ])
     },
     computed:{
